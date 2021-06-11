@@ -8,3 +8,27 @@
 
 .v-pagination__item, .v-pagination__first, .v-pagination__prev, .v-pagination__next, .v-pagination__last
   margin: $pagination-item-margin
+
+.v-pagination-btn
+  position: relative
+  width: 32px
+  height: 32px
+  margin: $pagination-item-margin
+
+  @include rounded($border-radius-root)
+  @include states('.v-pagination-btn__overlay')
+
+.v-pagination-btn__overlay
+  background-color: currentColor
+  border-radius: inherit
+  bottom: 0
+  left: 0
+  opacity: 0
+  pointer-events: none
+  position: absolute
+  right: 0
+  top: 0
+  transition: opacity 0.2s ease-in-out
+
+  .v-pagination-btn--is-active &
+    opacity: var(--v-border-opacity)

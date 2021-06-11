@@ -5,7 +5,7 @@ import type { ComponentPublicInstance } from 'vue'
 import type { Density } from '@/composables/density'
 
 // Components
-import { VBtn } from '../VBtn'
+import { VPaginationBtn } from '..'
 
 // Utilities
 import { computed, defineComponent, nextTick, ref } from 'vue'
@@ -88,19 +88,16 @@ export default defineComponent({
       type: String,
       default: '$vuetify.pagination.ariaLabel.last',
     },
-    color: {
-      type: [String, Boolean],
-      default: 'primary',
-    },
+    color: [String, Boolean],
     ellipsis: {
       type: String,
       default: '...',
     },
     showFirstLastPage: Boolean,
     ...makeTagProps({ tag: 'nav' }),
-    ...makeElevationProps({ elevation: 1 }),
+    ...makeElevationProps(),
     ...makeDensityProps({ density: 'comfortable' as Density }),
-    ...makeRoundedProps({ rounded: 'sm' }),
+    ...makeRoundedProps(),
     ...makeSizeProps(),
     ...makeBorderProps(),
   }),
@@ -193,10 +190,11 @@ export default defineComponent({
 
         if (typeof item === 'string') {
           return {
-            isSelected: false,
+            active: false,
             page: item,
             props: {
               ...sharedProps,
+              active: false,
               ref,
               ellipsis: true,
               icon: true,
@@ -207,12 +205,13 @@ export default defineComponent({
             },
           }
         } else {
-          const isSelected = item === page.value
+          const isActive = item === page.value
           return {
-            isSelected,
+            active: isActive,
             page: n(item),
             props: {
               ...sharedProps,
+              active: isActive,
               ref,
               ellipsis: false,
               icon: true,
@@ -220,10 +219,10 @@ export default defineComponent({
               elevation: props.elevation,
               outlined: props.outlined,
               border: props.border,
-              text: !isSelected,
-              color: isSelected ? props.color : false,
-              ariaCurrent: isSelected,
-              ariaLabel: t(isSelected ? props.currentPageAriaLabel : props.pageAriaLabel, index + 1),
+              text: !isActive,
+              color: isActive ? props.color : false,
+              ariaCurrent: isActive,
+              ariaLabel: t(isActive ? props.currentPageAriaLabel : props.pageAriaLabel, index + 1),
               onClick: (e: Event) => setValue(e, item),
             },
           }
@@ -312,44 +311,39 @@ export default defineComponent({
           { props.showFirstLastPage && (
             <li class="v-pagination__first" data-test="v-pagination-first">
               { slots.first ? slots.first(controls.value.first) : (
-                <VBtn {...controls.value.first} />
+                <VPaginationBtn {...controls.value.first} />
               ) }
             </li>
           ) }
 
           <li class="v-pagination__prev" data-test="v-pagination-prev">
             { slots.prev ? slots.prev(controls.value.prev) : (
-              <VBtn {...controls.value.prev} />
+              <VPaginationBtn {...controls.value.prev} />
             ) }
           </li>
 
           { items.value.map((item, index) => (
-            <li
-              key={ `${index}_${item.page}` }
-              class={[
-                'v-pagination__item',
-                {
-                  'v-pagination__item--selected': item.isSelected,
-                },
-              ]}
-              data-test="v-pagination-item"
-            >
-              { slots.item ? slots.item(item) : (
-                <VBtn {...item.props}>{ item.page }</VBtn>
-              ) }
-            </li>
+            slots.item ? slots.item(item) : (
+              <VPaginationBtn
+                key={ `${index}_${item.page}` }
+                data-test="v-pagination-item"
+                {...item.props}
+              >
+                { item.page }
+              </VPaginationBtn>
+            )
           )) }
 
           <li class="v-pagination__next" data-test="v-pagination-next">
             { slots.next ? slots.next(controls.value.next) : (
-              <VBtn {...controls.value.next} />
+              <VPaginationBtn {...controls.value.next} />
             ) }
           </li>
 
           { props.showFirstLastPage && (
             <li class="v-pagination__last" data-test="v-pagination-last">
               { slots.last ? slots.last(controls.value.last) : (
-                <VBtn {...controls.value.last} />
+                <VPaginationBtn {...controls.value.last} />
               ) }
             </li>
           ) }
