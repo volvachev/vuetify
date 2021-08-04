@@ -19,6 +19,7 @@
         <v-item :value="text">
           <template #default="{ active, toggle }">
             <v-card
+              :ref="'item-' + text"
               :color="active ? 'primary' : `grey ${dark ? 'darken' : 'lighten'}-3`"
               :dark="!dark && active"
               class="v-card--group py-3 px-4 text-center position-relative cursor-pointer d-flex align-center justify-space-between"
