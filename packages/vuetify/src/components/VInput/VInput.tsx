@@ -75,7 +75,11 @@ export default defineComponent({
     const controlRef = ref<HTMLElement>()
     const fieldRef = ref<HTMLElement>()
     const inputRef = ref<HTMLInputElement>()
-    const isDirty = computed(() => (value.value != null && value.value !== ''))
+    const isDirty = computed(() => {
+      return Array.isArray(value.value)
+        ? value.value.length > 0
+        : value.value != null && value.value !== ''
+    })
     const isFocused = ref(false)
     const id = computed(() => props.id || `input-${uid}`)
 
@@ -220,10 +224,10 @@ export default defineComponent({
               { slots.default?.({
                 uid,
                 isActive: isActive.value,
+                ref: inputRef,
                 props: {
                   id: id.value,
                   value: value.value,
-                  ref: inputRef,
                   onFocus: () => (isFocused.value = true),
                   onBlur: () => (isFocused.value = false),
                   onInput: (e: Event) => {
