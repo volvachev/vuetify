@@ -4,10 +4,13 @@ import './VInput.sass'
 // Components
 import { VMessages } from '@/components/VMessages'
 
+// Composables
+import { makeDensityProps, useDensity } from '@/composables/density'
+import { makeValidationProps, useValidation } from '@/composables/validation'
+
 // Utilities
 import { defineComponent, pick, propsFactory } from '@/util'
 import { VIcon } from '@/components/VIcon'
-import { makeDensityProps, useDensity } from '@/composables/density'
 
 // Types
 import type { PropType } from 'vue'
@@ -20,8 +23,8 @@ export const makeVInputProps = propsFactory({
   appendIcon: String,
   prependIcon: String,
   focused: Boolean,
-  error: Boolean,
-  disabled: Boolean,
+  // error: Boolean,
+  // disabled: Boolean,
   hideDetails: [Boolean, String] as PropType<boolean | 'auto'>,
   hint: String,
   messages: {
@@ -29,9 +32,10 @@ export const makeVInputProps = propsFactory({
     default: () => ([]),
   },
   persistentHint: Boolean,
-  readonly: Boolean,
+  // readonly: Boolean,
 
   ...makeDensityProps(),
+  ...makeValidationProps(),
 })
 
 export const VInput = defineComponent({
