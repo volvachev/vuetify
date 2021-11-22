@@ -23,8 +23,6 @@ export const makeVInputProps = propsFactory({
   appendIcon: String,
   prependIcon: String,
   focused: Boolean,
-  // error: Boolean,
-  // disabled: Boolean,
   hideDetails: [Boolean, String] as PropType<boolean | 'auto'>,
   hint: String,
   messages: {
@@ -32,7 +30,6 @@ export const makeVInputProps = propsFactory({
     default: () => ([]),
   },
   persistentHint: Boolean,
-  // readonly: Boolean,
 
   ...makeDensityProps(),
   ...makeValidationProps(),
@@ -50,6 +47,7 @@ export const VInput = defineComponent({
 
   setup (props, { slots, emit }) {
     const { densityClasses } = useDensity(props, 'v-input')
+    const { errorMessages, isDisabled, isReadonly, isValid, validationClasses } = useValidation(props, 'v-input')
 
     return () => {
       const hasPrepend = (slots.prepend || props.prependIcon)
@@ -67,12 +65,8 @@ export const VInput = defineComponent({
       return (
         <div class={[
           'v-input',
-          {
-            'v-input--disabled': props.disabled,
-            'v-input--error': props.error,
-            'v-input--readonly': props.readonly,
-          },
           densityClasses.value,
+          validationClasses.value,
         ]}
         >
           { hasPrepend && (
@@ -88,7 +82,12 @@ export const VInput = defineComponent({
             </div>
           ) }
 
-          { slots.default?.() }
+          { slots.default?.({
+            isDisabled,
+            isReadonly,
+            isValid,
+            validationClasses,
+          }) }
 
           { hasAppend && (
             <div
@@ -107,7 +106,13 @@ export const VInput = defineComponent({
             <div class="v-input__details">
               <VMessages
                 active={ showMessages }
-                value={ hasMessages ? props.messages : [props.hint] }
+                value={
+                  errorMessages.value.length
+                    ? errorMessages.value
+                    : hasMessages
+                      ? props.messages
+                      : [props.hint]
+                }
                 v-slots={{ default: slots.messages }}
               />
 

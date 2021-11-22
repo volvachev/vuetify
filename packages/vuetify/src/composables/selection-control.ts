@@ -15,14 +15,14 @@ export interface SelectionControlProps {
   id?: string
   inline?: boolean
   label?: string
-  offIcon?: string
-  onIcon?: string
+  offIcon: string | undefined
+  onIcon: string | undefined
   multiple?: boolean | null
-  trueValue?: null
-  falseValue?: null
+  trueValue?: any
+  falseValue?: any
   modelValue?: any
-  name?: string
-  type?: string
+  name: string | undefined
+  type: string | undefined
   value?: any
   valueComparator: typeof deepEqual
 }
@@ -112,6 +112,7 @@ export function useSelectionControl (props: SelectionControlProps) {
       ? group?.onIcon?.value ?? props.onIcon
       : group?.offIcon?.value ?? props.offIcon
   })
+  const name = computed(() => group?.name?.value ?? props.name)
 
   const uid = getUid()
   const id = computed(() => props.id || `input-${uid}`)
@@ -134,6 +135,7 @@ export function useSelectionControl (props: SelectionControlProps) {
   }
 
   return {
+    group,
     icon,
     isFocused,
     isFocusVisible,
@@ -143,8 +145,7 @@ export function useSelectionControl (props: SelectionControlProps) {
       onFocus,
       onBlur,
       id: id.value,
-      name: group?.name?.value ?? props.name,
-      type: group?.type?.value ?? props.type,
+      name: name.value,
       value: trueValue.value,
     },
   }

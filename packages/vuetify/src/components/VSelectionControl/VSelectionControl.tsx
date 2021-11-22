@@ -10,7 +10,6 @@ import { makeDensityProps, useDensity } from '@/composables/density'
 import { makeThemeProps } from '@/composables/theme'
 import { makeValidationProps, useValidation } from '@/composables/validation'
 import { makeSelectionControlProps, useSelectionControl } from '@/composables/selection-control'
-import { useProxiedModel } from '@/composables/proxiedModel'
 import { useTextColor } from '@/composables/color'
 
 // Directives
@@ -71,6 +70,7 @@ export const VSelectionControl = genericComponent<new <T>() => {
 
   setup (props, { attrs, slots }) {
     const {
+      group,
       icon,
       isFocused,
       isFocusVisible,
@@ -123,9 +123,10 @@ export const VSelectionControl = genericComponent<new <T>() => {
               { icon.value && <VIcon icon={ icon.value } /> }
 
               <input
-                v-model={ model }
+                v-model={ model.value }
                 disabled={ props.disabled }
                 readonly={ props.readonly }
+                type={ group?.type?.value ?? props.type }
                 { ...attrs }
                 { ...inputProps }
               />
@@ -146,7 +147,7 @@ export const VSelectionControl = genericComponent<new <T>() => {
 
           <VLabel
             disabled={ props.disabled }
-            error={ !props.error }
+            error={ props.error }
             for={ inputProps.id }
           >
             { label }
