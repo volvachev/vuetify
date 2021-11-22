@@ -61,7 +61,6 @@ export const VSelectionControl = genericComponent<new <T>() => {
     ...makeThemeProps(),
     ...makeDensityProps(),
     ...makeSelectionControlProps(),
-    ...makeValidationProps(),
   },
 
   emits: {
@@ -81,7 +80,7 @@ export const VSelectionControl = genericComponent<new <T>() => {
     const { densityClasses } = useDensity(props, 'v-selection-control')
 
     const { textColorClasses, textColorStyles } = useTextColor(computed(() => {
-      return model.value && props.error ? props.color : undefined
+      return model.value && !props.error ? props.color : undefined
     }))
 
     useRender(() => {
