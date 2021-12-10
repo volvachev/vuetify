@@ -1,0 +1,52 @@
+@forward './variables'
+@use '../../styles/tools'
+@use './variables' as *
+
+.v-navigation-item
+  border-radius: $navigation-item-border-radius
+  // background: pink
+  display: inline-flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  min-width: 80px
+  // height: 80px
+  padding-top: 12px
+  padding-bottom: 16px
+  line-height: 1rem
+  font-size: .75rem
+  position: relative
+  outline: none
+  font-weight: 500
+  letter-spacing: .5px
+
+  @include tools.states('.v-navigation-item__overlay', false)
+
+  &--active
+    .v-navigation-item__icon
+      background: lightblue
+    // @include tools.active-states('.v-navigation-item__overlay')
+
+  .v-icon
+    font-size: 24px
+
+.v-navigation-item__icon
+  width: 64px
+  height: 32px
+  display: flex
+  align-items: center
+  justify-content: center
+  // margin-bottom: 4px
+  border-radius: 16px
+
+  // .v-navigation-item:focus &
+  //   background: lightblue
+
+.v-navigation-item__overlay
+  background-color: currentColor
+  border-radius: inherit
+  pointer-events: none
+  opacity: 0
+  transition: opacity .2s ease-in-out
+
+  @include tools.absolute()
