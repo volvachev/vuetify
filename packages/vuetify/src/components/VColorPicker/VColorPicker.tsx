@@ -81,7 +81,6 @@ export const VColorPicker = defineComponent({
     const currentColor = useProxiedModel(
       props,
       'modelValue',
-      undefined,
       v => {
         let c = parseColor(v)
 

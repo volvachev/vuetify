@@ -63,7 +63,6 @@ export const VSlider = defineComponent({
     const model = useProxiedModel(
       props,
       'modelValue',
-      undefined,
       v => {
         const value = typeof v === 'string' ? parseFloat(v) : v == null ? min.value : v
 

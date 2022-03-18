@@ -27,6 +27,10 @@ import type { Prop, PropType } from 'vue'
 import type { MakeSlots } from '@/util'
 import type { ListGroupActivatorSlot } from './VListGroup'
 
+type ListDefaultSlot = {
+  items: InternalListItem[]
+}
+
 export type ListItem = {
   [key: string]: any
   $type?: 'item' | 'subheader' | 'divider'
@@ -59,6 +63,7 @@ export const VList = genericComponent<new <T>() => {
     items?: T[]
   }
   $slots: MakeSlots<{
+    default: [ListDefaultSlot]
     subheader: []
     header: [ListGroupActivatorSlot]
     item: [T]
@@ -154,7 +159,9 @@ export const VList = genericComponent<new <T>() => {
             dimensionStyles.value,
           ]}
         >
-          <VListChildren items={ items.value } v-slots={ slots }></VListChildren>
+          { slots.default?.({ items: items.value }) ?? (
+            <VListChildren items={ items.value } v-slots={ slots } />
+          ) }
         </props.tag>
       )
     })

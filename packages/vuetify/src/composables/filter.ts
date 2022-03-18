@@ -14,6 +14,7 @@ export type FilterKeyFunctions = Record<string, FilterFunction>
 export type FilterKeys = string | string[]
 export type FilterMatch = number | [number, number] | [number, number][] | boolean
 export type FilterMode = 'some' | 'every' | 'union' | 'intersection'
+export type Filtered<T> = { item: T, matches: Record<string, FilterMatch> }
 
 export interface FilterProps {
   customFilter?: FilterFunction
@@ -51,8 +52,8 @@ export function filterItems<T = Record<string, any>> (
     filterMode?: FilterMode
     noFilter?: boolean
   },
-) {
-  const array: { item: T, matches: Record<string, FilterMatch> }[] = []
+): Filtered<T>[] {
+  const array: Filtered<T>[] = []
   // always ensure we fall back to a functioning filter
   const filter = options?.default ?? defaultFilter
   const keys = options?.filterKeys ? wrapInArray(options.filterKeys) : false

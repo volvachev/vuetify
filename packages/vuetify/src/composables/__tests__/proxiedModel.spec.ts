@@ -12,7 +12,7 @@ const TestComponent = defineComponent({
   },
   emits: ['update:foo'],
   setup (props) {
-    const proxiedModel = useProxiedModel(props, 'foo', 'syncDefaultValue')
+    const proxiedModel = useProxiedModel(props, 'foo')
     return () => h('div', {
       onClick: () => proxiedModel.value = 'internal',
     }, [props.foo, proxiedModel.value].join(','))
@@ -28,7 +28,7 @@ const TestComponentWithPropDefaultValue = defineComponent({
   },
   // eslint-disable-next-line sonarjs/no-identical-functions
   setup (props) {
-    const proxiedModel = useProxiedModel(props, 'foo', 'syncDefaultValue')
+    const proxiedModel = useProxiedModel(props, 'foo')
     // eslint-disable-next-line sonarjs/no-identical-functions
     return () => h('div', {
       onClick: () => proxiedModel.value = 'internal',
@@ -120,7 +120,7 @@ describe('useProxiedModel', () => {
         foo: Array,
       },
       setup (props) {
-        const proxiedModel = useProxiedModel(props, 'foo', [],
+        const proxiedModel = useProxiedModel(props, 'foo',
           arr => {
             return (arr ?? []).map(String)
           },

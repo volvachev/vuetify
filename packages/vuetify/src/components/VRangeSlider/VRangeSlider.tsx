@@ -94,7 +94,6 @@ export const VRangeSlider = defineComponent({
     const model = useProxiedModel(
       props,
       'modelValue',
-      undefined,
       arr => {
         if (!arr || !arr.length) return [0, 0]
 

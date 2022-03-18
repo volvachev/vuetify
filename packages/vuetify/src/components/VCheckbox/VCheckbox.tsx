@@ -10,7 +10,51 @@ import { useProxiedModel } from '@/composables/proxiedModel'
 
 // Utility
 import { computed } from 'vue'
-import { defineComponent, filterInputAttrs, useRender } from '@/util'
+import { defineComponent, filterInputAttrs, propsFactory, useRender } from '@/util'
+
+export const makeCheckboxProps = propsFactory({
+  indeterminate: Boolean,
+  indeterminateIcon: {
+    type: String,
+    default: '$checkboxIndeterminate',
+  },
+  falseIcon: {
+    type: String,
+    default: '$checkboxOff',
+  },
+  trueIcon: {
+    type: String,
+    default: '$checkboxOn',
+  },
+}, 'checkbox')
+
+export const useCheckbox = (props: {
+  indeterminate?: boolean
+  'onUpdate:indeterminate': ((val: any) => void) | undefined
+  indeterminateIcon: string
+  falseIcon: string
+  trueIcon: string
+}) => {
+  const indeterminate = useProxiedModel(props, 'indeterminate')
+  const falseIcon = computed(() => {
+    return indeterminate.value
+      ? props.indeterminateIcon
+      : props.falseIcon
+  })
+  const trueIcon = computed(() => {
+    return indeterminate.value
+      ? props.indeterminateIcon
+      : props.trueIcon
+  })
+
+  function onChange () {
+    if (indeterminate.value) {
+      indeterminate.value = false
+    }
+  }
+
+  return { indeterminate, falseIcon, trueIcon, onChange }
+}
 
 export const VCheckbox = defineComponent({
   name: 'VCheckbox',
@@ -18,23 +62,9 @@ export const VCheckbox = defineComponent({
   inheritAttrs: false,
 
   props: {
-    indeterminate: Boolean,
-    indeterminateIcon: {
-      type: String,
-      default: '$checkboxIndeterminate',
-    },
-
-    ...makeVInputProps(),
     ...makeSelectionControlProps(),
-
-    falseIcon: {
-      type: String,
-      default: '$checkboxOff',
-    },
-    trueIcon: {
-      type: String,
-      default: '$checkboxOn',
-    },
+    ...makeCheckboxProps(),
+    ...makeVInputProps(),
   },
 
   emits: {
@@ -42,23 +72,7 @@ export const VCheckbox = defineComponent({
   },
 
   setup (props, { attrs, slots }) {
-    const indeterminate = useProxiedModel(props, 'indeterminate')
-    const falseIcon = computed(() => {
-      return indeterminate.value
-        ? props.indeterminateIcon
-        : props.falseIcon
-    })
-    const trueIcon = computed(() => {
-      return indeterminate.value
-        ? props.indeterminateIcon
-        : props.trueIcon
-    })
-
-    function onChange () {
-      if (indeterminate.value) {
-        indeterminate.value = false
-      }
-    }
+    const { onChange, falseIcon, trueIcon, indeterminate } = useCheckbox(props)
 
     useRender(() => {
       const [inputAttrs, controlAttrs] = filterInputAttrs(attrs)

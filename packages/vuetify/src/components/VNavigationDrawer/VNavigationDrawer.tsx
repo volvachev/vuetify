@@ -73,7 +73,7 @@ export const VNavigationDrawer = defineComponent({
     const { mobile } = useDisplay()
     const { roundedClasses } = useRounded(props)
     const router = useRouter()
-    const isActive = useProxiedModel(props, 'modelValue', null, v => !!v)
+    const isActive = useProxiedModel(props, 'modelValue', v => !!v)
     const isHovering = ref(false)
     const width = computed(() => {
       return (props.rail && props.expandOnHover && isHovering.value)

@@ -153,7 +153,6 @@ export function useGroup (
   const selected = useProxiedModel(
     props,
     'modelValue',
-    [],
     v => {
       if (v == null) return []
 

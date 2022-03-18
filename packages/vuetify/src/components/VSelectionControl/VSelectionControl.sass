@@ -9,7 +9,6 @@
   align-items: center
   contain: layout
   display: flex
-  flex: 1 0
   grid-area: control
   position: relative
   user-select: none
@@ -17,6 +16,9 @@
   .v-label
     height: 100%
     width: 100%
+
+  &--block
+    flex: 1 0
 
   &--disabled
     opacity: var(--v-disabled-opacity)

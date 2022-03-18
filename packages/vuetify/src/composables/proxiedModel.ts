@@ -13,7 +13,6 @@ export function useProxiedModel<
 > (
   props: Props,
   prop: Prop,
-  defaultValue?: Props[Prop],
   transformIn: (value?: Props[Prop]) => Inner = (v: any) => v,
   transformOut: (value: Inner) => Props[Prop] = (v: any) => v,
 ) {

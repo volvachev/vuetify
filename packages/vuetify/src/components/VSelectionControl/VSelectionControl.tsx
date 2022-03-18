@@ -271,9 +271,15 @@ export const VSelectionControl = genericComponent<new <T>() => {
             </div>
           </div>
 
-          <VLabel for={ id.value }>
-            { label }
-          </VLabel>
+          { label && (
+            <VLabel
+              disabled={ props.disabled }
+              error={ props.error }
+              for={ id.value }
+            >
+              { label }
+            </VLabel>
+          ) }
         </div>
       )
     })
