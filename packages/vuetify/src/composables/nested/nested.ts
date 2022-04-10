@@ -3,6 +3,7 @@ import { getCurrentInstance, getUid, propsFactory } from '@/util'
 import { computed, inject, onBeforeUnmount, provide, ref, toRef } from 'vue'
 import { multipleOpenStrategy, singleOpenStrategy } from './openStrategies'
 import {
+  classicLeafSelectStrategy,
   classicSelectStrategy,
   independentSelectStrategy,
   independentSingleSelectStrategy,
@@ -92,6 +93,7 @@ export const useNested = (props: NestedProps) => {
       case 'leaf': return leafSelectStrategy(props.mandatory)
       case 'independent': return independentSelectStrategy(props.mandatory)
       case 'single-independent': return independentSingleSelectStrategy(props.mandatory)
+      case 'classic-leaf': return classicLeafSelectStrategy(props.mandatory)
       case 'classic':
       default: return classicSelectStrategy(props.mandatory)
     }
@@ -133,7 +135,6 @@ export const useNested = (props: NestedProps) => {
   function getChildren (id: string) {
     const arr: string[] = []
     const queue = (children.value.get(id) ?? []).slice()
-
     while (queue.length) {
       const child = queue.shift()
 
@@ -166,12 +167,11 @@ export const useNested = (props: NestedProps) => {
       register: (id, parentId, isGroup) => {
         parentId && id !== parentId && parents.value.set(id, parentId)
 
-        isGroup && children.value.set(id, [])
+        isGroup && !children.value.has(id) && children.value.set(id, [])
 
         if (parentId != null) {
           children.value.set(parentId, [...(children.value.get(parentId) ?? []), id])
         }
-        opened.value.add(id)
       },
       unregister: id => {
         if (isUnmounted) return
