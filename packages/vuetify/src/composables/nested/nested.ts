@@ -241,7 +241,7 @@ export const useNestedItem = (id: Ref<string | undefined>, isGroup: boolean) => 
     open: (open: boolean, e: Event) => root.open(computedId.value, open, e),
     isOpen: computed(() => root.opened.value.has(computedId.value)),
     parent: computed(() => root.parents.value.get(computedId.value)),
-    select: (selected: boolean, e: Event) => root.select(computedId.value, selected, e),
+    select: (selected: boolean, e?: Event) => root.select(computedId.value, selected, e),
     isSelected,
     isIndeterminate: computed(() => root.selected.value.get(computedId.value) === 'indeterminate'),
     isLeaf: computed(() => !root.children.value.get(computedId.value)),

@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/no-identical-functions */
-import { classicSelectStrategy, independentSelectStrategy, independentSingleSelectStrategy, leafSelectStrategy, leafSingleSelectStrategy } from '../selectStrategies'
+import {
+  classicSelectStrategy,
+  independentSelectStrategy,
+  independentSingleSelectStrategy,
+  leafSelectStrategy,
+  leafSingleSelectStrategy,
+} from '../selectStrategies'
 
 describe('selectStrategies', () => {
   describe('independent', () => {
