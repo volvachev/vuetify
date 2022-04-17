@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-identical-functions */
-export type SelectStrategyFn = (data: {
+export type SelectFn = (data: {
   id: string
   value: boolean
   selected: Map<string, 'on' | 'off' | 'indeterminate'>
@@ -8,23 +8,25 @@ export type SelectStrategyFn = (data: {
   event?: Event
 }) => Map<string, 'on' | 'off' | 'indeterminate'>
 
-export type SelectStrategyTransformInFn = (
+export type TransformInFn = (
   v: string[] | undefined,
   children: Map<string, string[]>,
   parents: Map<string, string>,
 ) => Map<string, 'on' | 'off' | 'indeterminate'>
 
-export type SelectStrategyTransformOutFn = (
+export type TransformOutFn = (
   v: Map<string, 'on' | 'off' | 'indeterminate'>,
   children: Map<string, string[]>,
   parents: Map<string, string>,
 ) => any[]
 
 export type SelectStrategy = {
-  select: SelectStrategyFn
-  in: SelectStrategyTransformInFn
-  out: SelectStrategyTransformOutFn
+  select: SelectFn
+  in: TransformInFn
+  out: TransformOutFn
 }
+
+export type SelectStrategyFn = (mandatory?: boolean) => SelectStrategy
 
 export const independentSelectStrategy = (mandatory?: boolean): SelectStrategy => {
   const strategy: SelectStrategy = {

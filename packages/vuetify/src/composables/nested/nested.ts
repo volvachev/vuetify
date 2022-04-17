@@ -16,12 +16,19 @@ import type { InjectionKey, Prop, Ref } from 'vue'
 import type { SelectStrategyFn } from './selectStrategies'
 import type { OpenStrategyFn } from './openStrategies'
 
-export type SelectStrategy = 'single-leaf' | 'leaf' | 'independent' | 'single-independent' | 'classic' | SelectStrategyFn
-export type OpenStrategy = 'single' | 'multiple' | OpenStrategyFn
+export type SelectStrategyValue =
+  | 'single-leaf'
+  | 'leaf'
+  | 'independent'
+  | 'single-independent'
+  | 'classic'
+  | 'classic-leaf'
+  | SelectStrategyFn
+export type OpenStrategyValue = 'single' | 'multiple' | OpenStrategyFn
 
 export interface NestedProps {
-  selectStrategy: SelectStrategy | undefined
-  openStrategy: OpenStrategy | undefined
+  selectStrategy: SelectStrategyValue | undefined
+  openStrategy: OpenStrategyValue | undefined
   selected: string[] | undefined
   opened: string[] | undefined
   mandatory: boolean
@@ -70,8 +77,8 @@ export const emptyNested: NestedProvide = {
 }
 
 export const makeNestedProps = propsFactory({
-  selectStrategy: [String, Function] as Prop<SelectStrategy>,
-  openStrategy: [String, Function] as Prop<OpenStrategy>,
+  selectStrategy: [String, Function] as Prop<SelectStrategyValue>,
+  openStrategy: [String, Function] as Prop<OpenStrategyValue>,
   opened: Array as Prop<string[]>,
   selected: Array as Prop<string[]>,
   selectedClass: String,
@@ -86,7 +93,7 @@ export const useNested = (props: NestedProps) => {
   const opened = useProxiedModel(props, 'opened', v => new Set(v), v => [...v.values()])
 
   const selectStrategy = computed(() => {
-    if (typeof props.selectStrategy === 'object') return props.selectStrategy
+    if (props.selectStrategy && typeof props.selectStrategy !== 'string') return props.selectStrategy(props.mandatory)
 
     switch (props.selectStrategy) {
       case 'single-leaf': return leafSingleSelectStrategy(props.mandatory)
@@ -100,7 +107,7 @@ export const useNested = (props: NestedProps) => {
   })
 
   const openStrategy = computed(() => {
-    if (typeof props.openStrategy === 'function') return props.openStrategy
+    if (props.openStrategy && typeof props.openStrategy !== 'string') return props.openStrategy
 
     switch (props.openStrategy) {
       case 'single': return singleOpenStrategy
