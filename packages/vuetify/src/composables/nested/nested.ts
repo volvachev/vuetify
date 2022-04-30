@@ -54,6 +54,7 @@ type NestedProvide = {
     selectedClass: Ref<string | undefined>
     getPath: (id: string) => string[]
     getChildren: (id: string) => string[]
+    selectable: (id: string) => boolean
   }
 }
 
@@ -75,6 +76,7 @@ export const emptyNested: NestedProvide = {
     selectedClass: ref(),
     getPath: () => [],
     getChildren: () => [],
+    selectable: () => true,
   },
 }
 
@@ -223,6 +225,11 @@ export const useNested = (props: NestedProps) => {
         })
         newSelected && (selected.value = newSelected)
       },
+      selectable: id => selectStrategy.value.selectable({
+        id,
+        children: children.value,
+        parents: parents.value,
+      }),
       children,
       parents,
       selectedClass: toRef(props, 'selectedClass'),
@@ -253,6 +260,7 @@ export const useNestedItem = (id: Ref<string | undefined>, isGroup: boolean) => 
     parent: computed(() => root.parents.value.get(computedId.value)),
     select: (selected: boolean, e?: Event) => root.select(computedId.value, selected, e),
     isSelected,
+    isSelectable: computed(() => root.selectable(computedId.value)),
     isIndeterminate: computed(() => root.selected.value.get(computedId.value) === 'indeterminate'),
     isLeaf: computed(() => !root.children.value.get(computedId.value)),
     selectedClass: computed(() => isSelected.value && [root.selectedClass.value]),

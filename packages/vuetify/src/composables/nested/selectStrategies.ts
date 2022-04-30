@@ -20,16 +20,24 @@ export type TransformOutFn = (
   parents: Map<string, string>,
 ) => any[]
 
+export type SelectableFn = (data: {
+  id: string
+  children: Map<string, string[]>
+  parents: Map<string, string>
+}) => boolean
+
 export type SelectStrategy = {
   select: SelectFn
   in: TransformInFn
   out: TransformOutFn
+  selectable: SelectableFn
 }
 
 export type SelectStrategyFn = (mandatory?: boolean) => SelectStrategy
 
 export const independentSelectStrategy = (mandatory?: boolean): SelectStrategy => {
   const strategy: SelectStrategy = {
+    selectable: () => true,
     select: ({ id, value, selected }) => {
       // When mandatory and we're trying to deselect when id
       // is the only currently selected item then do nothing
@@ -75,6 +83,7 @@ export const independentSingleSelectStrategy = (mandatory?: boolean): SelectStra
   const parentStrategy = independentSelectStrategy(mandatory)
 
   const strategy: SelectStrategy = {
+    selectable: parentStrategy.selectable,
     select: ({ selected, id, ...rest }) => {
       const singleSelected = selected.has(id) ? new Map([[id, selected.get(id)!]]) : new Map()
       return parentStrategy.select({ ...rest, id, selected: singleSelected })
@@ -100,6 +109,7 @@ export const leafSelectStrategy = (mandatory?: boolean): SelectStrategy => {
   const parentStrategy = independentSelectStrategy(mandatory)
 
   const strategy: SelectStrategy = {
+    selectable: ({ id, children }) => !children.has(id),
     select: ({ id, selected, children, ...rest }) => {
       if (children.has(id)) return selected
 
@@ -116,6 +126,7 @@ export const leafSingleSelectStrategy = (mandatory?: boolean): SelectStrategy =>
   const parentStrategy = independentSingleSelectStrategy(mandatory)
 
   const strategy: SelectStrategy = {
+    selectable: ({ id, children }) => !children.has(id),
     select: ({ id, selected, children, ...rest }) => {
       if (children.has(id)) return selected
 
@@ -130,6 +141,7 @@ export const leafSingleSelectStrategy = (mandatory?: boolean): SelectStrategy =>
 
 export const classicSelectStrategy = (mandatory?: boolean): SelectStrategy => {
   const strategy: SelectStrategy = {
+    selectable: () => true,
     select: ({ id, value, selected, children, parents }) => {
       const original = new Map(selected)
 
@@ -199,6 +211,7 @@ export const classicLeafSelectStrategy = (mandatory?: boolean): SelectStrategy =
   const parentStrategy = classicSelectStrategy(mandatory)
 
   const strategy: SelectStrategy = {
+    selectable: parentStrategy.selectable,
     select: parentStrategy.select,
     in: parentStrategy.in,
     out: (v, children) => {
