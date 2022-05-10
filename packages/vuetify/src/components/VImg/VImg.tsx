@@ -190,6 +190,7 @@ export const VImg = defineComponent({
         srcset: normalisedSrc.value.srcset,
         sizes: props.sizes,
         ref: image,
+        key: `image ${normalisedSrc.value.src}`,
         onLoad,
         onError,
       })
@@ -201,7 +202,7 @@ export const VImg = defineComponent({
           {
             withDirectives(
               sources
-                ? <picture class="v-img__picture">{ sources }{ img }</picture>
+                ? <picture class="v-img__picture" key={`picture ${normalisedSrc.value.src}`}>{ sources }{ img }</picture>
                 : img,
               [[vShow, state.value === 'loaded']]
             )
